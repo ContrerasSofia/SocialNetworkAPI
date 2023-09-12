@@ -33,7 +33,23 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  async updateUser (req, res) {},
+  async updateUser (req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        {  _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      )
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with this id!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
   async removeUser (req, res) {
     try {
       const user = await User.findOneAndRemove({ _id: req.params.userId })
