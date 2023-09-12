@@ -101,12 +101,32 @@ module.exports = {
         { runValidators: true, new: true }
       )
 
-     
       res.json(thought);
 
     } catch (err) {
       res.status(500).json(err);
     }
   },
-  async deleteReaction(req, res) {}
+  async deleteReaction(req, res) {
+    try {
+      const react = await Reaction.deleteOne({ reactionId: req.params.reactionId })
+        .select('-__v');
+        
+      
+      if (!react) {
+        console.log(req.params.reactionId.toString());
+        return res.status(404).json({ message: 'No reaction with that ID' });
+      }
+
+      const thought = await Thought.findOneAndUpdate(
+        {  _id: req.params.thoughtId},
+        { $pull:{ reactions: react }},
+        { runValidators: true, new: true }
+      )
+
+      res.json({ message: 'Reaction successfully deleted!' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
 };
