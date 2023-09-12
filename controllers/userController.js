@@ -81,5 +81,7 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  async removeFriend (req, res) {}
+  async removeFriend (req, res) {
+    
+  }
 };

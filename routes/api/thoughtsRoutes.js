@@ -12,8 +12,8 @@ const {
 // /api/thoughts
 router.route('/').get(getThoughts);
 
-// /api/thoughts/:usertId
-router.route('/:usertId').post(addThoughts);
+// /api/thoughts/:userId
+router.route('/:userId').post(addThoughts);
 
 // /api/thoughts/:thoughtId
 router.route('/:thoughtId').get(getSingleThought).put(updateThought).delete(deleteThought);
