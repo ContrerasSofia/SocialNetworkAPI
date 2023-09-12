@@ -61,7 +61,26 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  async deleteThought(req, res) {},
+  async deleteThought(req, res) {
+    try {
+      const thoughts = await Thought.findOneAndRemove({ _id: req.params.thoughtId })
+        .select('-__v');
+        
+      if (!thoughts) {
+        return res.status(404).json({ message: 'No thoughts with that ID' });
+      }
+
+      const user = await User.findOneAndUpdate(
+        { username: thoughts.username},
+        { $pull:{ thoughts: req.params.thoughtId }},
+        { runValidators: true, new: true }
+      )
+
+      res.json({ message: 'thoughts successfully deleted!' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
   async addReaction(req, res) {},
   async deleteReaction(req, res) {}
 };
