@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types} = require('mongoose');
 
 // Schema to create Post model
 const ReactionSchema = new Schema({
@@ -20,7 +20,13 @@ const ReactionSchema = new Schema({
         maxLength: 280,
         required: true,
       },
-  });
+    },
+    {
+      toJSON: {
+        virtuals: true,
+      },
+      id: false,
+    });
   
 
 const ThoughtSchema = new Schema(
@@ -59,5 +65,5 @@ ThoughtSchema
 
 // Initialize our Video model
 const Thought = model('Thought', ThoughtSchema);
-
-module.exports = Thought;
+const Reaction = model('Reaction', ReactionSchema);
+module.exports = {Thought, Reaction}

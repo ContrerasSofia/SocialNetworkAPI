@@ -1,4 +1,4 @@
-const { Thought} = require('../models');
+const { Thought, Reaction} = require('../models/Thought');
 const User = require('../models/Users');
 
 module.exports = {
@@ -81,6 +81,32 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  async addReaction(req, res) {},
+  async addReaction(req, res) {
+    try {
+      let thought = await Thought.findOne({ _id: req.params.thoughtId })
+        .select('-__v');
+
+      if (!thought) {
+        return res.status(404).json({ message: 'No thought with that ID' });
+      }
+
+      const dbReactionData = await Reaction.create({
+        reactionBody: req.body.reactionBody,
+        username: thought.username
+      });
+
+      thought = await Thought.findOneAndUpdate(
+        {  _id: req.params.thoughtId },
+        { $addToSet: { reactions: dbReactionData} },
+        { runValidators: true, new: true }
+      )
+
+     
+      res.json(thought);
+
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
   async deleteReaction(req, res) {}
 };
